@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - AR-Merchandise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shadows+Into+Light&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Shadows Into Light', cursive;
+        }
+        
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated clothing items in background */
+        .clothing-item {
+            position: absolute;
+            opacity: 0.08;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-30px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-60px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-30px) rotate(3deg);
+            }
+        }
+        
+        .clothing-item:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; font-size: 4rem; }
+        .clothing-item:nth-child(2) { top: 15%; right: 10%; animation-delay: 2s; font-size: 3.5rem; }
+        .clothing-item:nth-child(3) { top: 60%; left: 8%; animation-delay: 4s; font-size: 5rem; }
+        .clothing-item:nth-child(4) { bottom: 15%; right: 5%; animation-delay: 1s; font-size: 4.5rem; }
+        .clothing-item:nth-child(5) { top: 40%; left: 15%; animation-delay: 3s; font-size: 3rem; }
+        .clothing-item:nth-child(6) { top: 70%; right: 20%; animation-delay: 5s; font-size: 4rem; }
+        .clothing-item:nth-child(7) { top: 25%; left: 40%; animation-delay: 1.5s; font-size: 3.5rem; }
+        .clothing-item:nth-child(8) { bottom: 25%; left: 30%; animation-delay: 3.5s; font-size: 5rem; }
+        .clothing-item:nth-child(9) { top: 50%; right: 15%; animation-delay: 2.5s; font-size: 3.8rem; }
+        .clothing-item:nth-child(10) { bottom: 40%; right: 35%; animation-delay: 4.5s; font-size: 4.2rem; }
+        
+        .login-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-black {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .icon-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    
+    <!-- Floating Clothing Items Background -->
+    <div class="clothing-item text-white"><i class="fas fa-tshirt"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-hat-cowboy"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-shoe-prints"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-socks"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-mitten"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-vest"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-user-tie"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-graduation-cap"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-glasses"></i></div>
+    <div class="clothing-item text-white"><i class="fas fa-shopping-bag"></i></div>
+    
+    <!-- Login Card -->
+    <div class="login-card rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-200">
+        
+        <!-- Header with Brand -->
+        <div class="gradient-black p-8 text-center relative overflow-hidden">
+            <div class="shimmer absolute inset-0"></div>
+            <div class="relative z-10">
+                <div class="w-24 h-24 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl icon-bounce transform hover:rotate-12 transition-transform duration-300">
+                    <span class="text-5xl font-black bg-gradient-to-br from-gray-800 to-black bg-clip-text text-transparent">AR</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2 brand-font">AR-Merchandise</h1>
+                <p class="text-gray-300 text-sm handwritten text-lg">Admin Portal Access</p>
+                <div class="mt-3 flex items-center justify-center gap-2 text-gray-400 text-xs">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Secured by JWT Authentication</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="p-8">
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">Welcome Back!</h2>
+                <p class="text-gray-600 text-sm">Enter your credentials to continue</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <!-- Username -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-user-shield mr-2 text-gray-600"></i>Username
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username"
+                        required
+                        autocomplete="username"
+                        class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-black transition"
+                        placeholder="Enter your username"
+                    >
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        <i class="fas fa-key mr-2 text-gray-600"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                            class="input-field w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-black transition pr-12"
+                            placeholder="Enter your password"
+                        >
+                        <button 
+                            type="button" 
+                            id="toggle-password"
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-black transition"
+                        >
+                            <i class="fas fa-eye" id="password-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center cursor-pointer group">
+                        <input 
+                            type="checkbox" 
+                            id="remember-me" 
+                            class="w-5 h-5 text-black border-2 border-gray-300 rounded focus:ring-2 focus:ring-black cursor-pointer"
+                        >
+                        <span class="ml-2 text-sm text-gray-700 font-medium group-hover:text-black transition">
+                            Remember me for 7 days
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-3 text-lg"></i>
+                        <p class="text-red-700 text-sm font-medium" id="error-text"></p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    id="login-btn"
+                    class="login-btn w-full gradient-black text-white py-4 rounded-xl font-bold text-base shadow-lg relative overflow-hidden group"
+                >
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span id="login-btn-text">Access Dashboard</span>
+                    </span>
+                    <div class="shimmer absolute inset-0"></div>
+                </button>
+            </form>
+
+          
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // Password toggle functionality
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('password-icon');
+        
+        if (togglePassword) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                if (type === 'password') {
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                } else {
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

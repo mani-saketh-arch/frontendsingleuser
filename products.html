@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - AR-Merchandise Admin</title>
+    
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shadows+Into+Light&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Shadows Into Light', cursive;
+        }
+        
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 80px;
+        }
+        
+        .gradient-black {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            transition: all 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 40;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        .sidebar-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        
+        .main-content.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 30;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+        
+        .menu-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #fff;
+        }
+        
+        .stat-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+ <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="gradient-black text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            AR
+                        </div>
+                        <div class="sidebar-text">
+                            <h1 class="text-white font-bold text-lg brand-font whitespace-nowrap">AR-Merchandise</h1>
+                            <p class="text-gray-400 text-xs handwritten whitespace-nowrap">Admin Portal</p>
+                        </div>
+                    </div>
+                    <button id="sidebarToggle" class="lg:block hidden text-gray-400 hover:text-white flex-shrink-0">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto p-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="dashboard.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-chart-line w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="products.html" class="menu-item active flex items-center space-x-3 px-4 py-3 text-white rounded-lg">
+                            <i class="fas fa-box w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="categories.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-tags w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="orders.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-shopping-cart w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-cog w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Section (Mobile Only) -->
+            <div class="p-4 border-t border-gray-700 lg:hidden">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold flex-shrink-0">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="sidebar-text flex-1">
+                        <p class="text-white font-semibold text-sm" id="admin-name">Admin</p>
+                        <p class="text-gray-400 text-xs">Super Admin</p>
+                    </div>
+                    <button id="logout-btn-sidebar" class="sidebar-text text-gray-400 hover:text-red-400 transition" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="main-content">
+        
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <!-- Mobile Menu Toggle -->
+                        <button id="mobileMenuBtn" class="lg:hidden text-gray-600 hover:text-gray-900">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <div>
+                            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+                                <i class="fas fa-box text-black text-lg sm:text-xl lg:text-2xl"></i>
+                                <span class="brand-font">Products</span>
+                            </h1>
+                            <p class="text-gray-600 text-xs sm:text-sm mt-1">Manage your product inventory</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop User Menu & Add Product Button -->
+                    <div class="flex items-center gap-4">
+                        <a href="product-form.html" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all text-sm lg:text-base">
+                            <i class="fas fa-plus"></i>
+                            <span class="hidden lg:inline">Add New Product</span>
+                            <span class="lg:hidden">Add</span>
+                        </a>
+                        
+                        <!-- Desktop User Dropdown -->
+                        <div class="hidden lg:block relative">
+                            <button id="userMenuBtn" class="flex items-center space-x-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900" id="headerAdminName">Admin</p>
+                                    <p class="text-xs text-gray-500">Super Admin</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div id="userDropdown" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); min-width: 200px; z-index: 50;">
+                                <div class="p-2">
+                                    <button id="logout-btn" class="w-full flex items-center space-x-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span class="font-medium">Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="px-4 sm:px-6 lg:px-8 py-6">
+            
+            <!-- Mobile Add Button -->
+            <div class="sm:hidden mb-4">
+                <a href="product-form.html" class="flex items-center justify-center gap-2 bg-gradient-to-r from-black to-gray-800 text-white px-4 py-3 rounded-lg font-semibold shadow-lg w-full">
+                    <i class="fas fa-plus"></i>
+                    Add New Product
+                </a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6">
+                <div class="stat-card bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 sm:p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-gray-50 rounded-lg">
+                            <i class="fas fa-box text-gray-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1" id="total-products">0</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 font-medium">Total Products</p>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 sm:p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-emerald-50 rounded-lg">
+                            <i class="fas fa-check-circle text-emerald-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-emerald-600 mb-1" id="active-products">0</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 font-medium">Active Products</p>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 sm:p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-red-50 rounded-lg">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-red-600 mb-1" id="low-stock-count">0</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 font-medium">Low Stock</p>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 sm:p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-amber-50 rounded-lg">
+                            <i class="fas fa-star text-amber-600 text-lg sm:text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-amber-600 mb-1" id="featured-count">0</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 font-medium">Featured</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-6 border border-gray-100">
+                <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-filter text-gray-500"></i>
+                    Filters
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Search</label>
+                        <input 
+                            type="text" 
+                            id="search-input"
+                            placeholder="Search products..."
+                            class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Category</label>
+                        <select 
+                            id="category-filter"
+                            class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        >
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Status</label>
+                        <select 
+                            id="status-filter"
+                            class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        >
+                            <option value="">All Status</option>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Stock</label>
+                        <select 
+                            id="stock-filter"
+                            class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        >
+                            <option value="">All Stock</option>
+                            <option value="low">Low Stock Only</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div id="products-container">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="mt-6 flex justify-center">
+                <!-- Pagination will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
+    
+    <script>
+        // Sidebar Toggle Logic (Same as dashboard)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('sidebar-collapsed');
+            });
+        }
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-open');
+                sidebar.classList.remove('collapsed');
+                sidebarOverlay.classList.add('active');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+        
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            document.addEventListener('click', () => {
+                userDropdown.style.display = 'none';
+            });
+            
+            userDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    </script>
+</body>
+</html>

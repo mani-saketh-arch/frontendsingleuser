@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AR-Merchandise Admin</title>
+    
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shadows+Into+Light&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Shadows Into Light', cursive;
+        }
+        
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 80px;
+        }
+        
+        .gradient-black {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            transition: all 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 40;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        .sidebar-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        
+        .main-content.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 30;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+        
+        .menu-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #fff;
+        }
+        
+        .settings-card {
+            transition: all 0.3s ease;
+        }
+        
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .form-group {
+            transition: all 0.2s ease;
+        }
+        
+        .form-group:hover {
+            transform: translateX(2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="gradient-black text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            AF
+                        </div>
+                        <div class="sidebar-text">
+                            <h1 class="text-white font-bold text-lg brand-font whitespace-nowrap">AF-Merchandise</h1>
+                            <p class="text-gray-400 text-xs handwritten whitespace-nowrap">Admin Portal</p>
+                        </div>
+                    </div>
+                    <button id="sidebarToggle" class="lg:block hidden text-gray-400 hover:text-white flex-shrink-0">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto p-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="dashboard.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-chart-line w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="products.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-box w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="categories.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-tags w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="orders.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-shopping-cart w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html" class="menu-item active flex items-center space-x-3 px-4 py-3 text-white rounded-lg">
+                            <i class="fas fa-cog w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Section (Mobile Only) -->
+            <div class="p-4 border-t border-gray-700 lg:hidden">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold flex-shrink-0">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="sidebar-text flex-1">
+                        <p class="text-white font-semibold text-sm">Admin</p>
+                        <p class="text-gray-400 text-xs">Super Admin</p>
+                    </div>
+                    <button id="logoutBtnSidebar" class="sidebar-text text-gray-400 hover:text-red-400 transition" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="main-content">
+        
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <!-- Mobile Menu Toggle -->
+                        <button id="mobileMenuBtn" class="lg:hidden text-gray-600 hover:text-gray-900">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <div>
+                            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+                                <i class="fas fa-cog text-black text-lg sm:text-xl lg:text-2xl"></i>
+                                <span class="brand-font">Settings</span>
+                            </h1>
+                            <p class="text-gray-600 text-xs sm:text-sm mt-1">Configure your store preferences</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop User Dropdown -->
+                    <div class="hidden lg:block relative">
+                        <button id="userMenuBtn" class="flex items-center space-x-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition">
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-gray-900">Admin</p>
+                                <p class="text-xs text-gray-500">Super Admin</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                        </button>
+                        
+                        <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); min-width: 200px; z-index: 50;">
+                            <div class="p-2">
+                                <button id="logoutBtn" class="w-full flex items-center space-x-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span class="font-medium">Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="px-4 sm:px-6 lg:px-8 py-6">
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="flex justify-center items-center py-20">
+                <div class="text-center">
+                    <span class="loading loading-spinner loading-lg text-black"></span>
+                    <p class="mt-4 text-lg font-semibold text-gray-700">Loading settings...</p>
+                </div>
+            </div>
+
+            <!-- Settings Form -->
+            <div id="settingsContent" class="hidden max-w-6xl mx-auto">
+                
+                <!-- Store Information -->
+                <div class="settings-card bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
+                        <div class="icon-wrapper bg-blue-50">
+                            <i class="fas fa-store text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Store Information</h2>
+                            <p class="text-sm text-gray-500">Basic details about your store</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-store-alt text-gray-400 mr-2"></i>
+                                Store Name
+                            </label>
+                            <input type="text" id="site_name" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                   placeholder="AF-Merchandise Store">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-envelope text-gray-400 mr-2"></i>
+                                Contact Email
+                            </label>
+                            <input type="email" id="site_email" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                   placeholder="info@afmerch.com">
+                        </div>
+                        
+                        <div class="form-group lg:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-phone text-gray-400 mr-2"></i>
+                                Contact Phone
+                            </label>
+                            <input type="text" id="site_phone" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                   placeholder="+91-9876543210">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing & Charges -->
+                <div class="settings-card bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
+                        <div class="icon-wrapper bg-emerald-50">
+                            <i class="fas fa-rupee-sign text-emerald-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Pricing & Charges</h2>
+                            <p class="text-sm text-gray-500">Configure shipping, taxes, and order limits</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-shipping-fast text-gray-400 mr-2"></i>
+                                Shipping Charges (₹)
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
+                                <input type="number" id="shipping_charges" 
+                                       class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                       placeholder="50" min="0" step="0.01">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 ml-1">Per order shipping cost</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-percentage text-gray-400 mr-2"></i>
+                                Tax Rate (%)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="tax_rate" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                       placeholder="18" min="0" max="100" step="0.01">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">%</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 ml-1">GST/VAT percentage</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-gift text-gray-400 mr-2"></i>
+                                Free Shipping Above (₹)
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
+                                <input type="number" id="free_shipping_threshold" 
+                                       class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                       placeholder="1000" min="0" step="0.01">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 ml-1">Order total for free shipping</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-shopping-bag text-gray-400 mr-2"></i>
+                                Minimum Order Amount (₹)
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
+                                <input type="number" id="min_order_amount" 
+                                       class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                       placeholder="500" min="0" step="0.01">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 ml-1">Required minimum for checkout</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Settings -->
+                <div class="settings-card bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
+                        <div class="icon-wrapper bg-orange-50">
+                            <i class="fas fa-boxes text-orange-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Inventory Management</h2>
+                            <p class="text-sm text-gray-500">Stock alerts and thresholds</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-exclamation-triangle text-gray-400 mr-2"></i>
+                                Low Stock Threshold
+                            </label>
+                            <input type="number" id="low_stock_threshold" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm transition"
+                                   placeholder="10" min="0">
+                            <p class="text-xs text-gray-500 mt-1 ml-1">Alert when stock falls below this number</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="settings-card bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
+                        <div class="icon-wrapper bg-purple-50">
+                            <i class="fas fa-credit-card text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Payment Methods</h2>
+                            <p class="text-sm text-gray-500">Available payment options for customers</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-5 border-2 border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                    <i class="fas fa-money-bill-wave text-2xl text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-900 text-base">Cash on Delivery (COD)</p>
+                                    <p class="text-sm text-gray-500">Allow customers to pay on delivery</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="cod_enabled" class="sr-only peer">
+                                <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-black/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="settings-card bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-3 text-sm text-gray-600">
+                            <i class="fas fa-info-circle text-blue-500"></i>
+                            <p>Changes will apply to all new orders</p>
+                        </div>
+                        <div class="flex gap-3 w-full sm:w-auto">
+                            <button onclick="resetForm()" class="flex-1 sm:flex-none px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold text-sm flex items-center justify-center gap-2">
+                                <i class="fas fa-undo"></i>
+                                Reset
+                            </button>
+                            <button onclick="saveSettings()" id="saveBtn" class="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white rounded-lg transition shadow-lg font-semibold text-sm flex items-center justify-center gap-2">
+                                <i class="fas fa-save"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Alert -->
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 mt-6">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-2xl text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 mb-1">Important Information</h3>
+                            <p class="text-sm text-blue-800">These settings control the core functionality of your store. Existing orders will not be affected by these changes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 flex flex-col items-center shadow-2xl">
+            <span class="loading loading-spinner loading-lg text-black"></span>
+            <p class="mt-4 font-semibold text-gray-900" id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast toast-top toast-end z-50"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/settings.js"></script>
+    
+    <script>
+        // Sidebar & User Menu Logic
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('sidebar-collapsed');
+            });
+        }
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-open');
+                sidebar.classList.remove('collapsed');
+                sidebarOverlay.classList.add('active');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+        
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            document.addEventListener('click', () => {
+                userDropdown.style.display = 'none';
+            });
+        }
+        
+        // Logout handlers
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutBtnSidebar = document.getElementById('logoutBtnSidebar');
+        
+        [logoutBtn, logoutBtnSidebar].forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (typeof Auth !== 'undefined') {
+                        Auth.logout();
+                    }
+                });
+            }
+        });
+
+        // Placeholder functions for settings management
+        function resetForm() {
+            if (confirm('Are you sure you want to reset all fields? This will reload the original settings.')) {
+                // Reload settings
+                if (typeof loadSettings === 'function') {
+                    loadSettings();
+                } else {
+                    location.reload();
+                }
+            }
+        }
+
+        function saveSettings() {
+            // This function should be implemented in settings.js
+            console.log('Save settings called');
+            if (typeof window.saveSettingsToAPI === 'function') {
+                window.saveSettingsToAPI();
+            }
+        }
+    </script>
+</body>
+</html>

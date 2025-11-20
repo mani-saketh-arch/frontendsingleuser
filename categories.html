@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - AR-Merchandise Admin</title>
+    
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shadows+Into+Light&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .brand-font {
+            font-family: 'Shadows Into Light', cursive;
+        }
+        
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 80px;
+        }
+        
+        .gradient-black {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            transition: all 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 40;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        
+        .sidebar-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        
+        .main-content.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 30;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+        
+        .menu-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="gradient-black text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            AR
+                        </div>
+                        <div class="sidebar-text">
+                            <h1 class="text-white font-bold text-lg brand-font whitespace-nowrap">AR-Merchandise</h1>
+                            <p class="text-gray-400 text-xs handwritten whitespace-nowrap">Admin Portal</p>
+                        </div>
+                    </div>
+                    <button id="sidebarToggle" class="lg:block hidden text-gray-400 hover:text-white flex-shrink-0">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto p-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="dashboard.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-chart-line w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="products.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-box w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="categories.html" class="menu-item active flex items-center space-x-3 px-4 py-3 text-white rounded-lg">
+                            <i class="fas fa-tags w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="orders.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-shopping-cart w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html" class="menu-item flex items-center space-x-3 px-4 py-3 text-gray-300 rounded-lg">
+                            <i class="fas fa-cog w-5 flex-shrink-0"></i>
+                            <span class="sidebar-text whitespace-nowrap">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Section (Mobile Only) -->
+            <div class="p-4 border-t border-gray-700 lg:hidden">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold flex-shrink-0">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="sidebar-text flex-1">
+                        <p class="text-white font-semibold text-sm">Admin</p>
+                        <p class="text-gray-400 text-xs">Super Admin</p>
+                    </div>
+                    <button id="logoutBtnSidebar" class="sidebar-text text-gray-400 hover:text-red-400 transition" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="main-content">
+        
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <!-- Mobile Menu Toggle -->
+                        <button id="mobileMenuBtn" class="lg:hidden text-gray-600 hover:text-gray-900">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <div>
+                            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+                                <i class="fas fa-tags text-black text-lg sm:text-xl lg:text-2xl"></i>
+                                <span class="brand-font">Category Management</span>
+                            </h1>
+                            <p class="text-gray-600 text-xs sm:text-sm mt-1">Organize your products into categories</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop: Add Button & User Menu -->
+                    <div class="flex items-center gap-4">
+                        <button onclick="openAddModal()" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all text-sm lg:text-base">
+                            <i class="fas fa-plus"></i>
+                            <span class="hidden lg:inline">Add Category</span>
+                            <span class="lg:hidden">Add</span>
+                        </button>
+                        
+                        <!-- Desktop User Dropdown -->
+                        <div class="hidden lg:block relative">
+                            <button id="userMenuBtn" class="flex items-center space-x-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900">Admin</p>
+                                    <p class="text-xs text-gray-500">Super Admin</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-full gradient-black flex items-center justify-center text-white font-bold">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                            </button>
+                            
+                            <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); min-width: 200px; z-index: 50;">
+                                <div class="p-2">
+                                    <button id="logoutBtn" class="w-full flex items-center space-x-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span class="font-medium">Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="px-4 sm:px-6 lg:px-8 py-6">
+            
+            <!-- Mobile Add Button -->
+            <div class="sm:hidden mb-4">
+                <button onclick="openAddModal()" class="flex items-center justify-center gap-2 bg-gradient-to-r from-black to-gray-800 text-white px-4 py-3 rounded-lg font-semibold shadow-lg w-full">
+                    <i class="fas fa-plus"></i>
+                    Add Category
+                </button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-6 border border-gray-100">
+                <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-filter text-gray-500"></i>
+                    Search & Filters
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div class="form-control">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Search
+                        </label>
+                        <input type="text" id="searchInput" placeholder="Search categories..." 
+                               class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm">
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Status
+                        </label>
+                        <select id="statusFilter" class="w-full px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            &nbsp;
+                        </label>
+                        <button onclick="resetFilters()" class="w-full px-3 sm:px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-redo"></i>
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Image</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Slug</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Products</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Order</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTableBody">
+                            <!-- Loading state -->
+                            <tr>
+                                <td colspan="7" class="text-center py-8">
+                                    <span class="loading loading-spinner loading-lg text-black"></span>
+                                    <p class="mt-2 text-gray-600">Loading categories...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-12 px-4">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tags text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-700 mb-2">No Categories Found</h3>
+                    <p class="text-gray-500 mb-6 text-sm">Start by creating your first category</p>
+                    <button onclick="openAddModal()" class="bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white px-6 py-3 rounded-lg font-semibold shadow-lg inline-flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Add Category
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Category Modal -->
+    <dialog id="categoryModal" class="modal">
+        <div class="modal-box w-11/12 max-w-2xl bg-white rounded-xl shadow-2xl">
+            <h3 class="font-bold text-xl sm:text-2xl mb-6 flex items-center gap-2 brand-font" id="modalTitle">
+                <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-tag text-amber-600"></i>
+                </div>
+                Add Category
+            </h3>
+            
+            <form id="categoryForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Category Name -->
+                    <div class="form-control col-span-2">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Category Name <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="categoryName" placeholder="e.g., T-Shirts" 
+                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black" required>
+                    </div>
+                    
+                    <!-- Slug -->
+                    <div class="form-control col-span-2">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Slug <span class="text-red-500">*</span>
+                            <span class="text-xs text-gray-500 ml-2">URL-friendly name</span>
+                        </label>
+                        <input type="text" id="categorySlug" placeholder="e.g., t-shirts" 
+                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black" required>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="form-control col-span-2">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Description
+                        </label>
+                        <textarea id="categoryDescription" placeholder="Brief description..." 
+                                  class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black h-20"></textarea>
+                    </div>
+                    
+                    <!-- Image URL -->
+                    <div class="form-control col-span-2">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Image URL
+                            <span class="text-xs text-gray-500 ml-2">Optional</span>
+                        </label>
+                        <input type="url" id="categoryImage" placeholder="https://example.com/image.jpg" 
+                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black">
+                    </div>
+                    
+                    <!-- Display Order -->
+                    <div class="form-control">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Display Order
+                        </label>
+                        <input type="number" id="displayOrder" value="0" 
+                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black" min="0">
+                    </div>
+                    
+                    <!-- Active Status -->
+                    <div class="form-control">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            Status
+                        </label>
+                        <div class="flex items-center gap-3 mt-3">
+                            <input type="checkbox" id="isActive" class="toggle toggle-success" checked>
+                            <span id="statusLabel" class="text-sm font-medium text-gray-700">Active</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal Actions -->
+                <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-black text-white rounded-lg transition shadow-lg font-semibold flex items-center justify-center gap-2" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save Category
+                    </button>
+                </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 flex flex-col items-center shadow-2xl">
+            <span class="loading loading-spinner loading-lg text-black"></span>
+            <p class="mt-4 font-semibold text-gray-900" id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast toast-top toast-end z-50"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/categories.js"></script>
+    
+    <script>
+        // Sidebar & User Menu Logic (Same as dashboard)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('sidebar-collapsed');
+            });
+        }
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.add('mobile-open');
+                sidebar.classList.remove('collapsed');
+                sidebarOverlay.classList.add('active');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+        
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            document.addEventListener('click', () => {
+                userDropdown.style.display = 'none';
+            });
+        }
+        
+        // Logout handlers
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutBtnSidebar = document.getElementById('logoutBtnSidebar');
+        
+        [logoutBtn, logoutBtnSidebar].forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (typeof Auth !== 'undefined') {
+                        Auth.logout();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
